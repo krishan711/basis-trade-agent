@@ -2,6 +2,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+LANDING_PAGE_ACTIVITY_JSON_PATH = Path("landing-page/.agent_activity.json")
+
 
 def get_activity_path(configPath: Path) -> Path:
     return configPath.parent / ".agent_activity.json"
@@ -19,9 +21,15 @@ def read_activity(activityPath: Path) -> dict:
     return json.loads(activityPath.read_text())
 
 
+def write_activity(activityPath: Path, activity: dict) -> None:
+    activityPath.write_text(json.dumps(activity, indent=2) + "\n")
+
+
 def append_activity_event(activityPath: Path, event: dict) -> None:
     activity = read_activity(activityPath)
     events = activity.get("events", [])
     events.append({"timestamp": datetime.now(timezone.utc).isoformat(), **event})
     activity["events"] = events[-20:]
-    activityPath.write_text(json.dumps(activity, indent=2) + "\n")
+    write_activity(activityPath, activity)
+    LANDING_PAGE_ACTIVITY_JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
+    write_activity(LANDING_PAGE_ACTIVITY_JSON_PATH, activity)

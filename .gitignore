@@ -2,5 +2,6 @@
 .envrc
 config.yaml
 .agent_activity.json
+landing-page/.agent_activity.json
 landing-page/activity.log
 __pycache__/
