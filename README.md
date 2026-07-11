@@ -84,10 +84,13 @@ Once live, the agent operates as a continuous state-machine executing the follow
 
 ## Running Phase 1
 
+This project uses [direnv](https://direnv.net/): `.envrc` (gitignored, not committed) holds `BASIS_TRADE_WALLET_PRIVATE_KEY` and `ARBITRUM_RPC_URL` directly as `export` statements — there is no `.env` file.
+
 ```bash
 make setup                       # uv sync
 cp config.example.yaml config.yaml   # fill in real parameters
-cp .env.example .env                 # set BASIS_TRADE_WALLET_PRIVATE_KEY
+$EDITOR .envrc                   # set BASIS_TRADE_WALLET_PRIVATE_KEY (ARBITRUM_RPC_URL has a public default)
+direnv allow
 make run                         # uv run python -m basis_trade_agent.main --config config.yaml
 ```
 
