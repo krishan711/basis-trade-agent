@@ -34,8 +34,12 @@ class GeminiLLM:
                 log.warning(f"Gemini API request failed (attempt {attemptNumber}/{maxRetries}), retrying: {exception}")
                 time.sleep(retryDelaySeconds * attemptNumber)
         responseJson = response.json()
-        rawText = responseJson["candidates"][0]["content"]["parts"][0]["text"]
-        jsonText = rawText.replace("```json", "", 1).replace("```", "", 1).strip()
+        rawText = responseJson["candidates"][0]["content"]["parts"][0]["text"].strip()
+        # Strip only a leading/trailing markdown fence, not the first "```" anywhere in the text -
+        # a JSON string value (e.g. a "message" quoting YAML back to the user) can itself contain
+        # nested triple-backtick fences, and a naive first-occurrence replace corrupts those instead
+        # of the real outer fence.
+        jsonText = rawText.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
         try:
             return json.loads(jsonText)
         except json.JSONDecodeError as exception:
