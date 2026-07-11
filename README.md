@@ -99,6 +99,7 @@ make main                        # background trading loop: uv run --active main
 `make agent` (`uv run --active agent.py`) starts an interactive CLI chat session backed by Gemini, using the same hand-rolled REST + JSON-tool-call pattern as `yieldseeker-app/api`'s `GeminiLLM`/`ChatBot` (no native Gemini function-calling SDK). It's read-only with respect to trading — it never places orders — but it can:
 
 * Answer questions about the agent wallet's current ETH/USDC/target-asset balances (`get_wallet_holdings`) and its currently open GMX position, if any (`get_current_position`) — current state only, no history.
+* Report the live GMX net funding/borrow rate versus your configured enter/exit thresholds, and explain why the agent has or hasn't entered a trade (`get_market_rate`) — fetched fresh from GMX on every call, not cached or estimated.
 * Read the current trading config (`get_config`).
 * Show the most recent approval/order activity the live main loop recorded, including explorer links (`get_recent_activity`).
 * Update trading parameters in `config.yaml` on request (`update_config`) — e.g. "raise my minimum yield to 8%" or "switch to aggressive mode". Comments in `config.yaml` are preserved; invalid values are rejected without touching the file. The running `make main` loop picks up config changes on its next cycle.
@@ -140,7 +141,7 @@ make main
 
 What you should see:
 - first, a `reloaded config from disk` log line proving `main.py` picked up what you changed conversationally without a restart;
-- then per-cycle rate logs every 15s;
+- then per-cycle rate logs (real cadence is dictated by GMX API/oracle latency — typically a few minutes between cycles in practice, not the configured `pollIntervalSeconds`, which only sets a minimum floor after each cycle finishes);
 - then, when the live smoothed GMX net rate clears the very low demo threshold, `action=enter` and real signed GMX tx hashes.
 
 5. After the position opens, go back to **Terminal 1** and ask:
@@ -149,3 +150,18 @@ What you should see:
 - `show me the recent activity`
 
 That gives you a complete before/after story in one recording: conversational config changes → live loop reacts → real on-chain position exists → conversational agent introspects the result.
+
+### Alternative demo script (net yield currently unfavorable)
+
+Real GMX funding/borrow rates move on their own schedule and are sometimes genuinely negative for the short side (`get_market_rate` / the loop's own `instantaneousApr` log both show the real number — see the "Talking to the agent" section). If the real net rate is still below even the demo's very low `enterNetYieldAprPercent` when you go to record, do **not** fake an entry — walk through the agent correctly declining to trade instead. This is still a live, on-chain-grounded recording, not a talk-only fallback:
+
+1. Run `prepare_demo.py` as in step 2 above. If you already ran it earlier and want a fresh visible on-chain moment for the recording, revoke the wallet's existing USDC/WBTC allowances for the GMX router first (`approve(router, 0)` for both tokens) so `main.py`'s normal startup safety step (`ensure_approvals`) genuinely re-submits and confirms two fresh approval transactions live in Terminal 2 — this is the agent's real, unmodified startup logic, not a scripted extra step.
+2. **Terminal 1** (`make agent`):
+   - `what are my current holdings?`
+   - `what's my current position?`
+   - `what's the current market rate, and why haven't you entered a trade?` (uses the `get_market_rate` tool — pulls the live GMX rate fresh, not a canned number, and compares it to your configured threshold)
+   - `show me the recent activity` (shows the real, fresh approval tx links from this run, confirmable on Arbiscan)
+3. **Terminal 2** (`make main`): let it run live. You should see the two real approval transactions submit and confirm (if you revoked beforehand), then per-cycle logs showing the real negative/low `instantaneousApr` and `action=none` — the agent correctly refusing to risk capital on an unfavorable trade.
+4. Back in **Terminal 1**, ask `what's the current market rate?` again — the number should match what Terminal 2 just logged, proving both surfaces are reading the same live truth, not two different scripts.
+
+This tells an equally real story: an agent that is armed (real approvals on-chain, ready to trade instantly), continuously monitoring genuine live GMX data, and disciplined enough to sit out a bad trade rather than force one — and can explain exactly why, with real numbers, when asked.

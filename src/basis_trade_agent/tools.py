@@ -104,3 +104,28 @@ class GetRecentActivityTool(ChatTool):
         if not events:
             return "No recorded activity yet."
         return yaml.dump(events[-8:], default_flow_style=False, sort_keys=False)
+
+
+class GetMarketRateInput(ChatToolInput):
+    pass
+
+
+class GetMarketRateTool(ChatTool):
+    def __init__(self) -> None:
+        super().__init__(
+            name="get_market_rate",
+            description="Returns the current live GMX net funding/borrow rate (instantaneous APR%) for the configured target asset, and how it compares to the configured enter/exit thresholds. Use this to explain why the agent has or has not entered a trade.",
+            paramsSchema=GetMarketRateInput,
+        )
+
+    def execute_inner(self, runtimeState: AgentRuntimeState, params: GetMarketRateInput) -> str:  # noqa: ARG002
+        config = load_config(runtimeState.configPath)
+        instantaneousNetRateAprPercent = runtimeState.gmxClient.get_net_rate_apr_percent(runtimeState.marketTokens)
+        rateData = {
+            "instantaneousNetRateAprPercent": instantaneousNetRateAprPercent,
+            "enterNetYieldAprPercent": config.enterNetYieldAprPercent,
+            "exitNetYieldAprPercent": config.exitNetYieldAprPercent,
+            "clearsEnterThreshold": instantaneousNetRateAprPercent >= config.enterNetYieldAprPercent,
+            "note": "This is the instantaneous rate fetched fresh from GMX right now, not the smoothed rolling-average rate main.py's loop actually uses for its decision.",
+        }
+        return yaml.dump(rateData, default_flow_style=False, sort_keys=False)
