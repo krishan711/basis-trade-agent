@@ -29,7 +29,6 @@ class ChatBot:
         self.history.append(ChatEvent(eventType="user", content=userMessage))
         isComplete = False
         currentContext = ""
-        lastMessage = None
         iterationCount = 0
         while not isComplete and iterationCount < MAX_TOOL_ITERATIONS:
             iterationCount += 1
@@ -57,13 +56,12 @@ class ChatBot:
                 isComplete = False
             elif step.get("message"):
                 currentMessage = str(step["message"])
-                if currentMessage == lastMessage:
-                    log.warning("LLM repeated the same message, ending to prevent infinite loop")
-                    isComplete = True
-                    continue
                 self.history.append(ChatEvent(eventType="agent", content=currentMessage))
                 yield currentMessage
-                lastMessage = currentMessage
+                # A message with no tool call has nothing further to act on autonomously (no way
+                # to get a real user reply mid-loop), so it always ends the turn regardless of the
+                # model's self-reported isComplete value.
+                isComplete = True
             else:
                 log.warning("LLM step did not contain tool or message")
                 isComplete = True

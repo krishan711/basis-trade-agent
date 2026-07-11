@@ -41,12 +41,12 @@ def test_execute_respects_max_tool_iterations_cap(mock_gemini_llm, mock_echo_too
     assert len(tool.executeInnerCalls) == MAX_TOOL_ITERATIONS
 
 
-def test_execute_stops_on_repeated_identical_message(mock_gemini_llm, mock_echo_tool) -> None:
+def test_execute_stops_immediately_on_message_even_when_not_marked_complete(mock_gemini_llm, mock_echo_tool) -> None:
     llm = mock_gemini_llm([
-        {"message": "Hi there", "tool": None, "isComplete": False},
-        {"message": "Hi there", "tool": None, "isComplete": False},
+        {"message": "Would you like aggressive or conservative?", "tool": None, "isComplete": False},
+        {"message": "Defaulting to aggressive since you didn't reply", "tool": None, "isComplete": False},
     ])
     chatBot = ChatBot(llm=llm, tools=[mock_echo_tool()])
-    events = list(chatBot.execute(systemPrompt="system", runtimeState=make_runtime_state(), userMessage="hi"))
-    assert events == ["Hi there"]
-    assert len(llm.calls) == 2
+    events = list(chatBot.execute(systemPrompt="system", runtimeState=make_runtime_state(), userMessage="favour more risk"))
+    assert events == ["Would you like aggressive or conservative?"]
+    assert len(llm.calls) == 1
