@@ -17,27 +17,30 @@ revealTargets.forEach((target) => revealObserver.observe(target));
 const terminalScript = [
   {
     role: 'User',
-    text: 'Move $10 into the agent.\nStay conservative.\nOnly enter when the trade is worth it.',
+    text: 'I want BTC basis yield, but I do not want to watch GMX all day. Can you handle it for me?',
   },
   {
     role: 'Agent',
-    text: 'Understood. I\'ll watch BTC basis conditions on GMX, wait for net yield to clear your threshold, and keep capital delta-neutral.',
+    text: 'Yes. I'll monitor funding, borrow drag, and margin health continuously. I wait for the trade to clear your bar before I move capital.',
   },
   {
     role: 'User',
-    text: 'What happens if funding weakens or the trade gets messy?',
+    text: 'Good. Keep me conservative. Avoid fee churn. Don't let a few noisy rate flips wipe out the edge.',
   },
   {
     role: 'Agent',
-    text: 'I keep watching yield quality, execution equilibrium, and margin health in the background. If the trade stops being attractive, I can step out instead of letting fee churn or drift silently eat the edge.',
+    text: 'Understood. I smooth the net rate, use hysteresis between entry and exit, and enforce a hold discipline so the strategy does not thrash itself to death on fees.',
   },
   {
     role: 'System',
-    text: 'Monitoring live funding and borrow conditions…\nRebalancing risk posture…\nExecuting on-chain actions and publishing verification links…',
+    text: 'Monitoring live BTC basis conditions…
+Comparing funding income versus borrow drag…
+Maintaining delta-neutral exposure…
+Adjusting posture as conditions evolve…',
   },
   {
     role: 'Agent',
-    text: 'This is the superpower: you set the mandate once, and your personal agent keeps doing the work behind the scenes.',
+    text: 'When the opportunity is strong, I execute. When the edge weakens, I protect capital. You get the yield strategy — without living in the terminal.',
   },
 ];
 
@@ -74,15 +77,11 @@ async function playTerminalConversation() {
   if (!terminalWindow) {
     return;
   }
-  while (terminalWindow.firstChild) {
-    terminalWindow.removeChild(terminalWindow.firstChild);
-  }
   for (const step of terminalScript) {
     const contentNode = createTerminalLine(step.role);
     await typeText(contentNode, step.text, step.role === 'System' ? 12 : 18);
-    await new Promise((resolve) => setTimeout(resolve, 550));
+    await new Promise((resolve) => setTimeout(resolve, 650));
   }
-  setTimeout(playTerminalConversation, 2400);
 }
 
 playTerminalConversation();
