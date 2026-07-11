@@ -28,7 +28,7 @@ def decrypt_private_key(encryptedPrivateKey: str) -> str:
 
 
 def load_wallet_context() -> WalletContext:
-    encryptedPrivateKey = os.environ["BASIS_TRADE_WALLET_PRIVATE_KEY"]
+    encryptedPrivateKey = os.environ["BASIS_TRADE_WALLET_PRIVATE_KEY_ENCRYPTED"]
     privateKey = decrypt_private_key(encryptedPrivateKey)
     rpcUrl = os.environ.get("ARBITRUM_RPC_URL")
     if not rpcUrl:

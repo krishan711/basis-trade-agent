@@ -84,7 +84,7 @@ Once live, the agent operates as a continuous state-machine executing the follow
 
 ## Running Phase 1
 
-This project uses [direnv](https://direnv.net/): `.envrc` (gitignored, not committed) holds `BASIS_TRADE_WALLET_PRIVATE_KEY`, `ARBITRUM_RPC_URL`, and `GEMINI_API_KEY` directly as `export` statements — there is no `.env` file. `BASIS_TRADE_WALLET_PRIVATE_KEY` must be the Fernet-encrypted output of `yieldseeker-app/api/scripts/generate_evm_private_key.py` (not a raw hex key) — `wallet.py` decrypts it with a hardcoded password matching that script's convention.
+This project uses [direnv](https://direnv.net/): `.envrc` (gitignored, not committed) holds `BASIS_TRADE_WALLET_PRIVATE_KEY_ENCRYPTED`, `ARBITRUM_RPC_URL`, and `GEMINI_API_KEY` directly as `export` statements — there is no `.env` file. `BASIS_TRADE_WALLET_PRIVATE_KEY_ENCRYPTED` must be the Fernet-encrypted output of `yieldseeker-app/api/scripts/generate_evm_private_key.py` (not a raw hex key) — `wallet.py` decrypts it with a hardcoded password matching that script's convention.
 
 ```bash
 make setup                       # uv sync
