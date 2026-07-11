@@ -111,8 +111,12 @@ body::before {
 }
 
 .hero-section {
-  padding: 54px 18px 34px;
-  margin-top: 18px;
+  min-height: calc(100vh - 96px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 18px 44px;
+  margin-top: 8px;
   position: relative;
   overflow: hidden;
 }
@@ -120,14 +124,34 @@ body::before {
 .hero-section::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 30px;
+  top: -100px;
+  bottom: -24px;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
   background:
-    linear-gradient(180deg, rgba(8, 30, 15, 0.96), rgba(7, 12, 9, 0.98)),
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: auto, 26px 26px, 26px 26px;
-  border: 1px solid var(--line);
+    radial-gradient(circle at 18% 22%, rgba(122, 235, 143, 0.18), transparent 24%),
+    radial-gradient(circle at 78% 18%, rgba(122, 235, 143, 0.12), transparent 18%),
+    linear-gradient(180deg, rgba(9, 27, 13, 0.98), rgba(5, 10, 7, 0.99)),
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: auto, auto, auto, 28px 28px, 28px 28px;
+}
+
+.hero-section::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  width: 100vw;
+  height: calc(100% + 220px);
+  transform: translateX(-50%);
+  background:
+    radial-gradient(circle at 30% 50%, rgba(122, 235, 143, 0.13), transparent 28%),
+    radial-gradient(circle at 68% 40%, rgba(122, 235, 143, 0.08), transparent 24%),
+    radial-gradient(circle at 50% 82%, rgba(122, 235, 143, 0.08), transparent 20%);
+  filter: blur(18px);
+  animation: heroPulse 9s ease-in-out infinite alternate;
 }
 
 .hero-copy {
@@ -387,6 +411,17 @@ body::before {
   transition-delay: 220ms;
 }
 
+@keyframes heroPulse {
+  0% {
+    transform: translateX(-50%) scale(1) translateY(0px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.03) translateY(12px);
+    opacity: 1;
+  }
+}
+
 @keyframes ticker {
   from {
     transform: translateX(0);
@@ -451,7 +486,7 @@ body::before {
 
 
 .hero-copy-full {
-  max-width: 860px;
+  max-width: 900px;
   margin: 0 auto;
   text-align: center;
 }
@@ -471,14 +506,15 @@ body::before {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  margin-top: 28px;
+  margin-top: 34px;
 }
 
 .hero-inline-metrics > div {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(6, 10, 7, 0.52);
+  background: rgba(6, 10, 7, 0.42);
   border-radius: 16px;
   padding: 18px;
+  backdrop-filter: blur(10px);
 }
 
 .hero-inline-metrics strong {
