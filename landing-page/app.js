@@ -17,30 +17,37 @@ revealTargets.forEach((target) => revealObserver.observe(target));
 const terminalScript = [
   {
     role: 'User',
-    text: 'I want BTC basis yield, but I do not want to watch GMX all day. Can you handle it for me?',
+    text: "Deploy when BTC basis is genuinely attractive. Maximise capital efficiency, but don't let me get caught babysitting funding flips and margin stress all day.",
   },
   {
     role: 'Agent',
-    text: "Yes. I'll monitor funding, borrow drag, and margin health continuously. I wait for the trade to clear your bar before I move capital.",
-  },
-  {
-    role: 'User',
-    text: "Good. Keep me conservative. Avoid fee churn. Don't let a few noisy rate flips wipe out the edge.",
-  },
-  {
-    role: 'Agent',
-    text: 'Understood. I smooth the net rate, use hysteresis between entry and exit, and enforce a hold discipline so the strategy does not thrash itself to death on fees.',
+    text: "Understood. Current BTC funding is 17.8% APR, borrow drag is 2.9% APR, so net basis yield is 14.9% APR. That supports a 100/0 posture: using the long BTC collateral to cover the short gives us full capital efficiency while the edge is strong.",
   },
   {
     role: 'System',
-    text: `Monitoring live BTC basis conditions…
-Comparing funding income versus borrow drag…
-Maintaining delta-neutral exposure…
-Adjusting posture as conditions evolve…`,
+    text: `Watching live funding and borrow curves…
+Checking liquidation buffer versus BTC mark price…
+Verifying spot and short notionals stay in equilibrium…
+Publishing approval and order links as execution completes…`,
+  },
+  {
+    role: 'User',
+    text: 'And if that yield compresses or the trade starts getting uglier?',
   },
   {
     role: 'Agent',
-    text: 'When the opportunity is strong, I execute. When the edge weakens, I protect capital. You get the yield strategy — without living in the terminal.',
+    text: 'Then I stop behaving like a static bot. If net yield slips, or collateral efficiency stops compensating for the risk, I can rotate from 100/0 into 50/50 to widen the liquidation buffer, cut drift, and avoid bleeding the edge away through forced reactions.',
+  },
+  {
+    role: 'System',
+    text: `Funding has compressed to 6.4% APR…
+Borrow drag is now 2.1% APR…
+Net yield is 4.3% APR and falling…
+Shifting out of 100/0, preserving delta-neutral exposure, and reducing liquidation sensitivity…`,
+  },
+  {
+    role: 'Agent',
+    text: 'That is the work you would normally be doing manually: reading funding, comparing net yield, sizing the collateral mix, deciding when to stay aggressive, and deciding when to step back before fee churn or margin pressure erases the opportunity.',
   },
 ];
 
