@@ -17,6 +17,17 @@ from basis_trade_agent.wallet import load_wallet_context
 
 log = logging.getLogger(__name__)
 IMMUTABLE_RUNTIME_CONFIG_FIELDS = ("chain", "targetAssetSymbol")
+ACTIVITY_LOG_PATH = Path("landing-page/activity.log")
+
+
+def configure_logging() -> None:
+    ACTIVITY_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+        handlers=[logging.StreamHandler(), logging.FileHandler(ACTIVITY_LOG_PATH, mode="w")],
+        force=True,
+    )
 
 
 def run_preflight_checks(walletContext, config: AgentConfig, usdcAddress: str, hasOpenPosition: bool) -> None:
@@ -128,7 +139,7 @@ def run_cycle(
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    configure_logging()
     parser = argparse.ArgumentParser(description="Basis Trade Agent: delta-neutral GMX V2 basis trade on Arbitrum")
     parser.add_argument("--config", type=Path, required=True)
     args = parser.parse_args()

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basis Trade Agent</title>
+    <meta
+      name="description"
+      content="Basis Trade Agent is a live GMX V2 BTC basis-trading assistant: configure it conversationally, monitor the running loop, and verify real on-chain activity locally."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <nav class="topbar">
+          <div class="brand-mark">B</div>
+          <div class="brand-copy">
+            <span class="eyebrow">YieldSeeker Labs</span>
+            <span class="brand-name">Basis Trade Agent</span>
+          </div>
+          <a class="ghost-link" href="./activity/">Live Activity</a>
+        </nav>
+
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">GMX V2 · Arbitrum · Conversational Control</p>
+            <h1>Automated BTC basis trading, configured like an agent and verified like an operator.</h1>
+            <p class="hero-text">
+              Basis Trade Agent opens and manages a delta-neutral WBTC + short-perp trade on GMX V2. You talk to the agent to tune yield thresholds,
+              hold times, and risk settings; the running execution loop picks those changes up live and does the real on-chain work.
+            </p>
+            <div class="hero-actions">
+              <a class="primary-button" href="./activity/">Open Live Activity</a>
+              <a class="secondary-button" href="#how-it-works">How it works</a>
+            </div>
+            <ul class="hero-points">
+              <li>Real GMX transactions on Arbitrum</li>
+              <li>Conversational config changes via Gemini</li>
+              <li>Click-through transaction verification with explorer links</li>
+            </ul>
+          </div>
+
+          <aside class="glass-panel hero-panel">
+            <div class="panel-header">
+              <span class="panel-label">Live Flow</span>
+              <span class="status-dot">Ready</span>
+            </div>
+            <div class="panel-stack">
+              <div class="panel-block">
+                <h3>1. Talk to the agent</h3>
+                <p>Use <span class="inline-code">agent.py</span> to set starting capital, minimum yield, hysteresis, smoothing, and poll interval.</p>
+              </div>
+              <div class="panel-block">
+                <h3>2. Run the loop</h3>
+                <p><span class="inline-code">main.py</span> reloads <span class="inline-code">config.yaml</span> every cycle and reacts without a restart.</p>
+              </div>
+              <div class="panel-block">
+                <h3>3. Verify everything</h3>
+                <p>The activity feed mirrors the live loop logs and the agent can surface recent tx links back to you.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </header>
+
+      <main>
+        <section class="section" id="how-it-works">
+          <div class="section-heading">
+            <p class="eyebrow">What it is</p>
+            <h2>A purpose-built operator interface for live basis trades.</h2>
+            <p>
+              This is not a paper-trading dashboard. It is a local-first control surface around a real Python strategy that signs transactions, waits for GMX keeper fills,
+              and records exactly what it did.
+            </p>
+          </div>
+          <div class="card-grid three-up">
+            <article class="glass-panel info-card">
+              <h3>What the product does</h3>
+              <p>Runs a WBTC spot + GMX short-perp basis trade, entering when smoothed net funding clears your threshold and closing on weaker yields or margin stress.</p>
+            </article>
+            <article class="glass-panel info-card">
+              <h3>Who should use it</h3>
+              <p>Hands-on DeFi operators who understand GMX, want human-readable control over the trade, and care about seeing live execution instead of abstract dashboards.</p>
+            </article>
+            <article class="glass-panel info-card">
+              <h3>What to expect</h3>
+              <p>Conversational configuration, a visible running loop, explicit approval/order activity, and explorer-linked verification when real trades are placed.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-heading narrow">
+            <p class="eyebrow">Why it exists</p>
+            <h2>Basis trades are attractive, but brutal to run manually.</h2>
+          </div>
+          <div class="card-grid two-up">
+            <article class="glass-panel detail-card">
+              <h3>Humans are bad at the boring parts</h3>
+              <ul>
+                <li>Funding rates move faster than intuition.</li>
+                <li>Opening spot and short legs manually creates fee/slippage friction.</li>
+                <li>Margin health needs constant monitoring, not occasional checking.</li>
+              </ul>
+            </article>
+            <article class="glass-panel detail-card">
+              <h3>This agent handles the operational loop</h3>
+              <ul>
+                <li>Smoothed enter/exit logic with hysteresis.</li>
+                <li>Live config reload from disk while the loop is running.</li>
+                <li>Persistent recent activity with explorer links for approvals and orders.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-heading narrow">
+            <p class="eyebrow">Expected experience</p>
+            <h2>Simple operating model. Visible execution path.</h2>
+          </div>
+          <div class="timeline">
+            <div class="timeline-step glass-panel">
+              <span class="step-number">01</span>
+              <h3>Prepare the wallet</h3>
+              <p>Fund the agent wallet with USDC and a small ETH reserve on Arbitrum.</p>
+            </div>
+            <div class="timeline-step glass-panel">
+              <span class="step-number">02</span>
+              <h3>Configure conversationally</h3>
+              <p>Tell the agent exactly how aggressive or conservative you want the trade to be.</p>
+            </div>
+            <div class="timeline-step glass-panel">
+              <span class="step-number">03</span>
+              <h3>Watch the live loop</h3>
+              <p>See the loop reload config, evaluate live rates, and submit real transactions with verification links.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

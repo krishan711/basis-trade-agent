@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basis Trade Agent · Live Activity</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="activity-page">
+    <div class="page-shell">
+      <nav class="topbar">
+        <div class="brand-mark">B</div>
+        <div class="brand-copy">
+          <span class="eyebrow">YieldSeeker Labs</span>
+          <span class="brand-name">Basis Trade Agent</span>
+        </div>
+        <div class="link-row">
+          <a class="ghost-link" href="../">Landing Page</a>
+          <a class="ghost-link" href="https://arbiscan.io/" target="_blank" rel="noreferrer">Arbiscan</a>
+        </div>
+      </nav>
+
+      <section class="glass-panel activity-shell">
+        <div class="activity-header">
+          <span class="eyebrow">Live local feed</span>
+          <span class="status-dot">Polling activity.log</span>
+        </div>
+        <div class="activity-title-row">
+          <div>
+            <h1>/activity</h1>
+            <p class="hero-text">This mirrors the same log lines `main.py` writes to your terminal, by polling the local file <span class="inline-code">landing-page/activity.log</span>.</p>
+          </div>
+          <div class="activity-meta" id="last-updated">Waiting for first refresh…</div>
+        </div>
+
+        <div class="glass-panel log-panel">
+          <div class="log-toolbar">
+            <div class="log-status">Auto-refresh every 2s</div>
+            <div class="log-actions">
+              <button class="button-lite" id="refresh-button" type="button">Refresh now</button>
+              <button class="button-lite" id="scroll-button" type="button">Scroll to latest</button>
+            </div>
+          </div>
+          <pre class="log-output empty-state" id="log-output">No activity yet.
+
+Start <span class="inline-code">make main</span> in another terminal and this page will populate automatically.</pre>
+        </div>
+      </section>
+    </div>
+    <script src="./viewer.js"></script>
+  </body>
+</html>
