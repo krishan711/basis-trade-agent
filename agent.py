@@ -51,8 +51,10 @@ def main() -> None:
             break
         if not userMessage:
             continue
+        print()
         for outputLine in chatBot.execute(systemPrompt=systemPrompt, runtimeState=runtimeState, userMessage=userMessage):
             print(outputLine)
+        print()
 
 
 if __name__ == "__main__":
