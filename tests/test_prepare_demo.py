@@ -44,7 +44,7 @@ def test_prepare_demo_updates_config_and_prints_runbook(
 ) -> None:
     prepare_demo = importlib.reload(importlib.import_module("prepare_demo"))
     configPath = tmp_path / "config.yaml"
-    walletContext = SimpleNamespace(account=SimpleNamespace(address="0xWALLET"), web3=SimpleNamespace())
+    walletContext = SimpleNamespace(account=SimpleNamespace(address="0xWALLET"), web3=SimpleNamespace(eth=SimpleNamespace(get_balance=lambda address: int(0.02 * 10**18))))
     currentConfig = make_config(targetAssetSymbol="WBTC")
     updatedConfig = make_config(
         startingCapitalUsdc=12.5,
@@ -106,7 +106,7 @@ def test_prepare_demo_updates_config_and_prints_runbook(
     assert loadConfigCalls == [configPath]
     assert resolveCalls == [(readConfig, currentConfig.targetAssetSymbol)]
     assert gmxClient.getShortPositionCalls == [{"marketTokens": marketTokens, "walletAddress": walletContext.account.address}]
-    assert updateCalls == [(configPath, {**prepare_demo.DEMO_CONFIG_UPDATES, "startingCapitalUsdc": 12.5})]
+    assert updateCalls == [(configPath, {**prepare_demo.DEMO_CONFIG_UPDATES, "startingCapitalUsdc": 12.5, "minEthReserve": 0.005})]
     assert holdingsCalls == [(walletContext, marketTokens)]
     output = capsys.readouterr().out
     assert f"Prepared {configPath} for the live demo." in output

@@ -15,7 +15,6 @@ DEMO_CONFIG_UPDATES = {
     "riskTolerance": "conservative",
     "pollIntervalSeconds": 15,
     "slippagePercent": 1.0,
-    "minEthReserve": 0.005,
 }
 
 
@@ -36,9 +35,17 @@ def main() -> None:
             f"Wallet {walletContext.account.address} already has an open {marketTokens.marketSymbol} short (~${position.sizeUsd:.2f}). Close it before recording the demo."
         )
 
+    ethBalance = walletContext.web3.eth.get_balance(walletContext.account.address) / 10**18
+    # Derive from the wallet's actual current balance rather than a fixed value - a hardcoded
+    # reserve can end up ABOVE what the wallet actually holds after gas spent across prior runs,
+    # which would make main.py's own preflight check refuse to start.
+    minEthReserve = min(0.005, ethBalance * 0.3)
+    if minEthReserve <= 0:
+        raise RuntimeError(f"Wallet {walletContext.account.address} has {ethBalance:.6f} ETH - fund it with ETH for gas before recording the demo.")
+
     updatedConfig = update_config_file(
         args.config,
-        {**DEMO_CONFIG_UPDATES, "startingCapitalUsdc": args.starting_capital_usdc},
+        {**DEMO_CONFIG_UPDATES, "startingCapitalUsdc": args.starting_capital_usdc, "minEthReserve": minEthReserve},
     )
     holdings = get_wallet_holdings(walletContext, marketTokens)
     print(f"Prepared {args.config} for the live demo.")
